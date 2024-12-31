@@ -2,25 +2,19 @@ const container = document.querySelector(".container");
 const image = document.querySelector("#music-image");
 const title = document.querySelector("#music-details .title");
 const singer = document.querySelector("#music-details .singer");
-const prev = document.querySelector("#controls #prev");
 const play = document.querySelector("#controls #play");
+const prev = document.querySelector("#controls #prev");
 const next = document.querySelector("#controls #next");
+const duration = document.querySelector("#duration");
+const currentTime = document.querySelector("#current-time");
+const progressBar = document.querySelector("#progress-bar");
 
 const player = new MusicPlayer(musicList);
-
-
-container.classList.remove("pause");
 
 window.addEventListener("load", () => {
     let music = player.getMusic();
     displayMusic(music);
 });
-
-
-window.addEventListener("load", () => {
-    let music = player.getMusic();
-    displayMusic(music);
-})
 
 function displayMusic(music) {
     title.innerText = music.getName();
@@ -32,23 +26,15 @@ function displayMusic(music) {
 play.addEventListener("click", () => {
     const isMusicPlay = container.classList.contains("playing");
     isMusicPlay ? pauseMusic() : playMusic();
-    audio.play();
 });
 
 prev.addEventListener("click", () => {
-   prevMusic();
+    prevMusic();
 });
 
 next.addEventListener("click", () => {
     nextMusic();
 });
-
-function nextMusic() {
-    player.next();
-    let music = player.getMusic();
-    displayMusic(music);
-    playMusic();
-}
 
 function prevMusic() {
     player.prev();
@@ -57,18 +43,40 @@ function prevMusic() {
     playMusic();
 }
 
-function playMusic () {
-    container.classList.remove("pause");
-    container.classList.add("playing");
+function nextMusic() {
+    player.next();
+    let music = player.getMusic();
+    displayMusic(music);
+    playMusic();
+}
+
+function pauseMusic() {
+    container.classList.remove("playing");
     play.classList = "fa-solid fa-play";
+    audio.pause();
+}
+
+function playMusic() {
+    container.classList.add("playing");
+    play.classList = "fa-solid fa-pause";
     audio.play();
 }
 
-
-function pauseMusic () {
-    container.classList.remove("playing");
-    container.classList.add("pause");
-    play.classList = "fa-solid fa-pause";
-    audio.pause();
+const calculateTime = (toplamSaniye) => {
+    const dakika = Math.floor(toplamSaniye / 60);
+    const saniye = Math.floor(toplamSaniye % 60);
+    const guncellenenSaniye = saniye < 10 ? `0${saniye}`: `${saniye}`;
+    const sonuc = `${dakika}:${guncellenenSaniye}`;
+    return sonuc;
 }
+
+audio.addEventListener("loadedmetadata", () => {
+    duration.textContent = calculateTime(audio.duration);
+    progressBar.max = Math.floor(audio.duration);
+});
+
+audio.addEventListener("timeupdate", () => {
+    progressBar.value = Math.floor(audio.currentTime);
+    currentTime.textContent = calculateTime(progressBar.value);
+});
 
