@@ -16,6 +16,7 @@ const player = new MusicPlayer(musicList);
 window.addEventListener("load", () => {
     let music = player.getMusic();
     displayMusic(music);
+    audio.volume = volumeBar.value / 100;
 });
 
 function displayMusic(music) {
@@ -54,13 +55,13 @@ function nextMusic() {
 
 function pauseMusic() {
     container.classList.remove("playing");
-    play.classList = "fa-solid fa-play";
+    play.querySelector("i").classList = "fa-solid fa-play";
     audio.pause();
 }
 
 function playMusic() {
     container.classList.add("playing");
-    play.classList = "fa-solid fa-pause";
+    play.querySelector("i").classList  = "fa-solid fa-pause";
     audio.play();
 }
 
@@ -68,8 +69,7 @@ const calculateTime = (toplamSaniye) => {
     const dakika = Math.floor(toplamSaniye / 60);
     const saniye = Math.floor(toplamSaniye % 60);
     const guncellenenSaniye = saniye < 10 ? `0${saniye}`: `${saniye}`;
-    const sonuc = `${dakika}:${guncellenenSaniye}`;
-    return sonuc;
+    return `${dakika}:${guncellenenSaniye}`;
 }
 
 audio.addEventListener("loadedmetadata", () => {

@@ -1,24 +1,16 @@
-.container { width: 350px}
-
-#controls i {
-    font-size: 30px;
-    margin-right: 20px ;
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
-#progress-bar {
-    width: 100%;
-}
+.container { width: 400px}
 
-#progress .times, #controls {
+#progress .times, .card-footer, .volume-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-#progress {
-    margin-bottom: 20px;
-}
-
-#music-image {
-    width: 100%;
-}
+.volume-container i { margin-right: 20px }
