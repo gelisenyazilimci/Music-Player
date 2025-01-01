@@ -8,7 +8,9 @@ const next = document.querySelector("#controls #next");
 const duration = document.querySelector("#duration");
 const currentTime = document.querySelector("#current-time");
 const progressBar = document.querySelector("#progress-bar");
-
+const volume = document.querySelector("#volume");
+const volumeBar = document.querySelector("#volume-bar");
+const audio = document.querySelector("audio");
 const player = new MusicPlayer(musicList);
 
 window.addEventListener("load", () => {
@@ -80,3 +82,32 @@ audio.addEventListener("timeupdate", () => {
     currentTime.textContent = calculateTime(progressBar.value);
 });
 
+// Ses kontrolü için event listener
+volumeBar.addEventListener("input", (e) => {
+    const value = e.target.value;
+    audio.volume = value / 100; // 0.0 - 1.0 arasında bir değer
+    if (value === 0) {
+        audio.muted = true;
+        isMuted = true;
+        volume.classList = "fa-solid fa-volume-xmark"; // İkonu değiştir
+    } else {
+        audio.muted = false;
+        isMuted = false;
+        volume.classList = "fa-solid fa-volume-high"; // İkonu geri değiştir
+    }
+});
+
+// Sessiz durumu kontrolü
+let isMuted = false;
+
+volume.addEventListener("click", () => {
+    if (!isMuted) {
+        audio.muted = true;
+        isMuted = true;
+        volume.classList = "fa-solid fa-volume-xmark"; // İkonu değiştir
+    } else {
+        audio.muted = false;
+        isMuted = false;
+        volume.classList = "fa-solid fa-volume-high"; // İkonu geri değiştir
+    }
+});
