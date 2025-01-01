@@ -11,12 +11,14 @@ const progressBar = document.querySelector("#progress-bar");
 const volume = document.querySelector("#volume");
 const volumeBar = document.querySelector("#volume-bar");
 const audio = document.querySelector("audio");
+const ul = document.querySelector("ul");
 const player = new MusicPlayer(musicList);
 
 window.addEventListener("load", () => {
     let music = player.getMusic();
     displayMusic(music);
     audio.volume = volumeBar.value / 100;
+    displayMusicList(player.musicList);
 });
 
 function displayMusic(music) {
@@ -65,11 +67,11 @@ function playMusic() {
     audio.play();
 }
 
-const calculateTime = (toplamSaniye) => {
-    const dakika = Math.floor(toplamSaniye / 60);
-    const saniye = Math.floor(toplamSaniye % 60);
-    const guncellenenSaniye = saniye < 10 ? `0${saniye}`: `${saniye}`;
-    return `${dakika}:${guncellenenSaniye}`;
+const calculateTime = (totalSecond) => {
+    const minute = Math.floor(totalSecond / 60);
+    const second = Math.floor(totalSecond % 60);
+    const updatedSeconds = second < 10 ? `0${second}`: `${second}`;
+    return `${minute}:${updatedSeconds}`;
 }
 
 audio.addEventListener("loadedmetadata", () => {
@@ -82,33 +84,32 @@ audio.addEventListener("timeupdate", () => {
     currentTime.textContent = calculateTime(progressBar.value);
 });
 
-// Ses kontrolü için event listener
 volumeBar.addEventListener("input", (e) => {
     const value = e.target.value;
     audio.volume = value / 100; // 0.0 - 1.0 arasında bir değer
     if (value === 0) {
         audio.muted = true;
         isMuted = true;
-        volume.classList = "fa-solid fa-volume-xmark"; // İkonu değiştir
+        volume.classList = "fa-solid fa-volume-xmark";
     } else {
         audio.muted = false;
         isMuted = false;
-        volume.classList = "fa-solid fa-volume-high"; // İkonu geri değiştir
+        volume.classList = "fa-solid fa-volume-high";
     }
 });
 
-// Sessiz durumu kontrolü
+
 let isMuted = false;
 
 volume.addEventListener("click", () => {
     if (!isMuted) {
         audio.muted = true;
         isMuted = true;
-        volume.classList = "fa-solid fa-volume-xmark"; // İkonu değiştir
+        volume.classList = "fa-solid fa-volume-xmark";
     } else {
         audio.muted = false;
         isMuted = false;
-        volume.classList = "fa-solid fa-volume-high"; // İkonu geri değiştir
+        volume.classList = "fa-solid fa-volume-high";
     }
 });
 
@@ -116,3 +117,25 @@ progressBar.addEventListener("input", () => {
    currentTime.textContent = calculateTime(progressBar.value);
    audio.currentTime = progressBar.value;
 });
+
+const displayMusicList = (list) => {
+    for (let i = 0; i < list.length; i++) {
+        let liTag =
+        `
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>${list[i].getName() + " - " + list[i].getSinger()}</span>
+                    <span id="music-${i}" class="badge bg-primary rounded-pill"></span>
+                    <audio class="music-${i}" src="mp3/${list[i].file}"></audio>
+        </li>
+        `;
+
+        ul.insertAdjacentHTML("beforeend", liTag);
+
+        let liAudioDuration = ul.querySelector(`#music-${i}`);
+        let liAudioSpan = ul.querySelector(`.music-${i}`);
+
+        liAudioSpan.addEventListener("loadeddata", () => {
+        liAudioDuration.innerText = calculateTime(liAudioSpan.duration);
+        });
+    }
+};

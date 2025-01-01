@@ -7,7 +7,11 @@ class Music {
     }
 
     getName() {
-        return this.title + " - " + this.singer;
+        return this.title;
+    }
+
+    getSinger () {
+        return this.singer;
     }
 }
 
