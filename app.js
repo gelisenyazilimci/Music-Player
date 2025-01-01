@@ -111,3 +111,8 @@ volume.addEventListener("click", () => {
         volume.classList = "fa-solid fa-volume-high"; // İkonu geri değiştir
     }
 });
+
+progressBar.addEventListener("input", () => {
+   currentTime.textContent = calculateTime(progressBar.value);
+   audio.currentTime = progressBar.value;
+});
