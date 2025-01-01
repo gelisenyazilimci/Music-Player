@@ -64,7 +64,7 @@ function pauseMusic() {
 function playMusic() {
     container.classList.add("playing");
     play.querySelector("i").classList  = "fa-solid fa-pause";
-    audio.play();
+    audio.play().catch(() => window.location.reload());
 }
 
 const calculateTime = (totalSecond) => {
@@ -122,7 +122,7 @@ const displayMusicList = (list) => {
     for (let i = 0; i < list.length; i++) {
         let liTag =
         `
-        <li class="list-group-item d-flex justify-content-between align-items-center">
+        <li li-index='${i}' onclick="SelectedMusic(this)" class="list-group-item d-flex justify-content-between align-items-center">
                     <span>${list[i].getName() + " - " + list[i].getSinger()}</span>
                     <span id="music-${i}" class="badge bg-primary rounded-pill"></span>
                     <audio class="music-${i}" src="mp3/${list[i].file}"></audio>
@@ -139,3 +139,27 @@ const displayMusicList = (list) => {
         });
     }
 };
+
+function SelectedMusic (li) {
+    const index = li.getAttribute("li-index");
+    player.index = index;
+    displayMusic(player.getMusic());
+    playMusic(index);
+    isPlayingNow();
+}
+
+const isPlayingNow = () => {
+    for(let i of ul.querySelectorAll("li")) {
+        if(i.classList.contains("playing")) {
+            i.classList.remove("playing");
+        }
+
+        if(i.getAttribute("li-index") === player.index) {
+            i.classList.add("playing");
+        }
+    }
+}
+
+audio.addEventListener("ended", () => {
+    nextMusic();
+});
